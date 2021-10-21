@@ -1,0 +1,14 @@
+.newBook-Button {
+    display: flex; 
+    margin: 0 auto;
+}
+
+.form-container {
+    display: flex; 
+    flex-direction: column; 
+}
+
+.input-Book {
+    margin: 0 auto;
+    margin-top: 20px;
+}
