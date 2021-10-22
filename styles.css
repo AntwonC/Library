@@ -12,3 +12,28 @@
     margin: 0 auto;
     margin-top: 20px;
 }
+
+.table-container {
+    font-family: arial, sans-serif; 
+    border-collapse: collapse; 
+    width: 15%; 
+    margin: 0 auto;
+    margin-top: 30px;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+#myLib {
+    display: flex; 
+    justify-content: center;
+    margin: 0 auto;
+    margin-top: 20px;
+    padding-top: 50px;
+    font-family:'Times New Roman', Times, serif;
+    font-size: 45px; 
+}
+  
