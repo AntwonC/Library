@@ -13,6 +13,14 @@
     margin-top: 20px;
 }
 
+.toggle-Read {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin: 0 auto; 
+    margin-top: 20px;
+}
+
 .table-container {
     font-family: arial, sans-serif; 
     border-collapse: collapse; 

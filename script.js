@@ -24,14 +24,30 @@ function printLibrary() {
     }
 }
 
-function removeBook(removeButton) {
-    const cells = document.querySelectorAll("td"); 
+function removeBook(removeButton, trElement) {
+   // const cells = document.querySelectorAll("td"); 
+    const index = removeButton.closest("tr").rowIndex; 
+    console.log(`index: ${index}`); // Gets the row needed to remove. 
+    trElement.remove(); 
+    removeButton.remove(); 
+    myLibrary.splice(index-1, 1); // Update array
+    console.table(myLibrary);
+}
+
+function changeRead(readButton, tdRead) {
+    const index = readButton.closest("tr").rowIndex; 
+    const libraryIndex = myLibrary[index-1].read;
+
+    console.log(`libraryIndex: |${libraryIndex}|`); 
+
+    if ( libraryIndex.localeCompare("No") === 0 ) {
+        myLibrary[index-1].read = "Yes";
+        tdRead.textContent = myLibrary[index-1].read; 
+    } else {
+        myLibrary[index-1].read = "No";
+        tdRead.textContent = myLibrary[index-1].read; 
+    }
     
-    console.log(removeButton.closest("tr").rowIndex); // Gets the row needed to remove. 
-  /*  cells.forEach(cell => {
-        console.log(`cell: ${cell.closest("tr").rowIndex}`);
- 
-    }) */
 }
 
 function createForm() {
@@ -48,9 +64,15 @@ function createForm() {
     const inputBookAuthor = document.createElement("input"); 
     inputBookAuthor.classList.add("input-Book");
     inputBookAuthor.placeholder = "Author";
-    const inputRead = document.createElement("input"); 
-    inputRead.classList.add("input-Book");
-    inputRead.placeholder = "Read yet?";
+    // Buttons for Read/Not Read
+    const inputRead = document.createElement("button"); 
+    inputRead.classList.add("toggle-Read");
+    inputRead.textContent = "Read";
+
+    const inputNotRead = document.createElement("button"); 
+    inputNotRead.classList.add("toggle-Read"); 
+    inputNotRead.textContent = "Not Read";
+
     // Submit button
     const submitButton = document.createElement("button"); 
     submitButton.classList.add("input-Book"); 
@@ -60,7 +82,8 @@ function createForm() {
     // Form Container
     formContainer.appendChild(inputBookName);
     formContainer.appendChild(inputBookAuthor);
-    formContainer.appendChild(inputRead);    
+    formContainer.appendChild(inputRead); 
+    formContainer.appendChild(inputNotRead);    
     formContainer.appendChild(submitButton);
 
     submitButton.addEventListener("click", function() {
@@ -80,20 +103,34 @@ function createForm() {
         tdAuthor.textContent = authorName; 
         const tdRead = document.createElement("td"); 
         tdRead.textContent = read;
+
+        // Remove Button
         const tdPlaceholder = document.createElement("td");
         const removeOption = document.createElement("button");
         removeOption.textContent = "Remove"; 
+        // Change Read button
+        const tdReadPlaceholder = document.createElement("td");
+        const changeReadStatus = document.createElement("button");
+        changeReadStatus.textContent = "Change";
+
         
         // Adding elements to the table
         tableContainer.appendChild(trElement); 
         trElement.appendChild(tdName); 
         trElement.appendChild(tdAuthor); 
         trElement.appendChild(tdRead); 
-        tdPlaceholder.appendChild(removeOption);  
+        tdPlaceholder.appendChild(removeOption); // Adding tdPlaceholder button
+        tdReadPlaceholder.appendChild(changeReadStatus); // Adding tdReadPlaceholder button
+        // Add the placeholders to the tr element
         trElement.appendChild(tdPlaceholder); 
+        trElement.appendChild(tdReadPlaceholder);
+        
+        removeOption.addEventListener("click", function() {  // When remove button is clicked
+            removeBook(tdPlaceholder, trElement); 
+        });
 
-        removeOption.addEventListener("click", function() {
-            removeBook(tdPlaceholder); 
+        changeReadStatus.addEventListener("click", function() { // When change read button is clicked
+            changeRead(changeReadStatus, tdRead); 
         });
         // Remove the form elements. No longer needed. 
         inputBookName.remove(); 
