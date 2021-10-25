@@ -13,13 +13,22 @@
     margin-top: 20px;
 }
 
-.toggle-Read {
+.read-Container {
     display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    margin: 0 auto; 
+    flex-direction: row; 
+    justify-content: center;
     margin-top: 20px;
 }
+
+#readYes {
+    margin-right: 10px; 
+}
+
+#readNo {
+    margin-left: 10px;
+}
+
+
 
 .table-container {
     font-family: arial, sans-serif; 
