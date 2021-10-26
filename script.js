@@ -1,7 +1,8 @@
 let myLibrary = []; 
 const addBookButton = document.querySelector(".newBook-Button");
 const formContainer = document.querySelector(".form-container"); 
-const tableContainer = document.querySelector(".table-container"); 
+const tableContainer = document.querySelector(".table-container");
+const alertContainer = document.querySelector(".alert-container");  
 
 var counter = 0; 
 
@@ -13,34 +14,21 @@ function Book(title, author, read) {
 }
 
 function addBookToLibrary(bookObject) {
-    //console.log(`${bookObject.title}, ${bookObject.author}, ${bookObject.read}`)
     myLibrary.push(bookObject);  
-   // localStorage.setItem("book", bookObject);
+
     localStorage.setItem("title" + counter, bookObject.title);
     localStorage.setItem("author" + counter, bookObject.author);
     localStorage.setItem("read" + counter, bookObject.read);
 
-    console.table(localStorage);
     counter++; 
 }
 
-function printLibrary() {
-    // Use for-in to iterate over Objects
-    // Use regular looping to iterate over normal array
-    for(let i = 0; i < myLibrary.length; i++) {
-        //console.log(`${myLibrary[i].title}, ${myLibrary[i].author}, ${myLibrary[i].read}`);
-    }
-}
 
 function populateLibrary() {
-    console.log(`length: ${localStorage.length} | counter: ${counter}`); 
-    console.table(localStorage); 
 
     for(let i = 0; i < localStorage.length; i++) {
-        //console.log(localStorage.getItem("book")); 
-
+   
         if ( localStorage.getItem("title" + i) === null && localStorage.getItem("author" + i) === null && localStorage.getItem("read" + i) === null ) {
-            //counter++; 
             continue; 
         } else {
             const retrieveBook = new Book(localStorage.getItem("title" + i),localStorage.getItem("author" + i), localStorage.getItem("read" + i));
@@ -92,12 +80,9 @@ function populateLibrary() {
 
     }
 
-    //localStorage.clear(); 
-    console.table(myLibrary); 
 }
 
-function removeBook(removeButton, trElement, i) {
-   // const cells = document.querySelectorAll("td"); 
+function removeBook(removeButton, trElement, i) { 
     const index = removeButton.closest("tr").rowIndex; 
 
     if ( typeof i === "undefined" ) {
@@ -105,20 +90,15 @@ function removeBook(removeButton, trElement, i) {
     } else {
         removeFromStorage(i); 
     }
-    console.log(`index: ${index}| i: ${i}`); // Gets the row needed to remove. 
+
     trElement.remove(); 
     removeButton.remove(); 
     myLibrary.splice(index-1, 1); // Update array
     
-    console.table(myLibrary);
 }
 
 function removeFromStorage(index) {
-    console.log(`index: ${index} in removeFromStorage()| counter: ${counter}`);
 
-    if ( typeof index === 'undefined' ) {
-        console.log("UNDEFINED");
-    }
     const currentLength = localStorage.length; 
 
     localStorage.removeItem("title" + index);
@@ -131,11 +111,6 @@ function removeFromStorage(index) {
         localStorage.removeItem("author" + index);
         localStorage.removeItem("read" + index);
     }
-
-    console.log(`Removed some items from localStorage`);
-    console.table(localStorage); 
-
-    console.log(`${localStorage.length}`);
     
 }
 
@@ -143,14 +118,14 @@ function changeRead(readButton, tdRead) {
     const index = readButton.closest("tr").rowIndex; 
     const libraryIndex = myLibrary[index-1].read;
 
-    console.log(`libraryIndex: |${libraryIndex}|`); 
-
     if ( libraryIndex.localeCompare("No") === 0 ) {
         myLibrary[index-1].read = "Yes";
         tdRead.textContent = myLibrary[index-1].read; 
+        localStorage.setItem("read" + (index-1), myLibrary[index-1].read);
     } else {
         myLibrary[index-1].read = "No";
         tdRead.textContent = myLibrary[index-1].read; 
+        localStorage.setItem("read" + (index-1), myLibrary[index-1].read);
     }
     
 }
@@ -177,6 +152,7 @@ function createForm() {
     const inputRead = document.createElement("input"); 
     inputRead.setAttribute("type", "radio");
     inputRead.setAttribute("id", "readYes");
+    inputRead.checked = true;
     inputRead.name = "readChoice"; 
     inputRead.value = "Read";
     // Label for read radio button
@@ -219,12 +195,14 @@ function createForm() {
         const form = document.querySelector("form"); 
         var data = new FormData(form); 
         var output = ""; 
+
         for(const entry of data ) {
             output = entry[1];
         }
 
         const bookName = inputBookName.value; 
-        const authorName = inputBookAuthor.value; 
+        const authorName = inputBookAuthor.value;
+        
         // Change to match the "yes/no" read option 
         if ( output.localeCompare("Not Read") === 0 ) {
             output = "No"; 
@@ -232,7 +210,24 @@ function createForm() {
             output = "Yes"; 
         }
         const read = output; 
-     
+
+        // Validation 
+        if ( bookName.localeCompare("") === 0 && authorName.localeCompare("") === 0 ) {
+            const divAlert = document.createElement("div"); 
+            divAlert.textContent = "Book Name and Author cannot be blank";
+            alertContainer.appendChild(divAlert); 
+            return; 
+        } else if ( bookName.localeCompare("") !== 0 && authorName.localeCompare("") === 0 ) {
+            const divAlert = document.createElement("div"); 
+            divAlert.textContent = "Author cannot be blank";
+            alertContainer.appendChild(divAlert); 
+            return; 
+        } else if ( bookName.localeCompare("") === 0 && authorName.localeCompare("") !== 0  ) {
+            const divAlert = document.createElement("div"); 
+            divAlert.textContent = "Book Name cannot be blank";
+            alertContainer.appendChild(divAlert); 
+            return; 
+        }
         // Create new Book object and add to Library
         const book = new Book(bookName, authorName, read); 
         addBookToLibrary(book);
@@ -280,21 +275,11 @@ function createForm() {
         readContainer.remove(); 
         submitButton.remove(); 
 
-        console.table(myLibrary);
+       
 
     });
 
 }
-//localStorage.clear(); 
+
 populateLibrary(); 
 addBookButton.addEventListener("click", createForm);
-
-//myLibrary[0] = bookObject; 
-//myLibrary[1] = secondBook; 
-//myLibrary[2] = thirdBook; 
-
-//console.log(myLibrary[0].title + ", " + myLibrary[0].author); 
-//console.table(myLibrary); 
-
-
-//printLibrary(); 
