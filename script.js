@@ -109,6 +109,7 @@ function removeBook(removeButton, trElement, i) {
     trElement.remove(); 
     removeButton.remove(); 
     myLibrary.splice(index-1, 1); // Update array
+    
     console.table(myLibrary);
 }
 
@@ -118,12 +119,22 @@ function removeFromStorage(index) {
     if ( typeof index === 'undefined' ) {
         console.log("UNDEFINED");
     }
-    
+    const currentLength = localStorage.length; 
+
     localStorage.removeItem("title" + index);
     localStorage.removeItem("author" + index);
     localStorage.removeItem("read" + index);
-    
+    // Add one and check if the lenghts are the same. Means that nothing was removed
+    if ( localStorage.length === currentLength ) {
+        index += 1; 
+        localStorage.removeItem("title" + index);
+        localStorage.removeItem("author" + index);
+        localStorage.removeItem("read" + index);
+    }
+
+    console.log(`Removed some items from localStorage`);
     console.table(localStorage); 
+
     console.log(`${localStorage.length}`);
     
 }
