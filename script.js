@@ -131,7 +131,7 @@ function changeRead(readButton, tdRead) {
 }
 
 function createForm() {
-    console.log("Creating form...");
+  
     // Avoids adding too many elements
     if ( formContainer.childElementCount > 1 ) {
         return ; 
@@ -213,21 +213,23 @@ function createForm() {
 
         // Validation 
         if ( bookName.localeCompare("") === 0 && authorName.localeCompare("") === 0 ) {
-            const divAlert = document.createElement("div"); 
-            divAlert.textContent = "Book Name and Author cannot be blank";
-            alertContainer.appendChild(divAlert); 
+            //const divAlert = document.createElement("div"); 
+            alertContainer.textContent = "Book Name and Author cannot be blank";
+           // alertContainer.appendChild(divAlert); 
             return; 
         } else if ( bookName.localeCompare("") !== 0 && authorName.localeCompare("") === 0 ) {
-            const divAlert = document.createElement("div"); 
-            divAlert.textContent = "Author cannot be blank";
-            alertContainer.appendChild(divAlert); 
+           // const divAlert = document.createElement("div"); 
+           alertContainer.textContent = "Author cannot be blank";
+            //alertContainer.appendChild(divAlert); 
             return; 
         } else if ( bookName.localeCompare("") === 0 && authorName.localeCompare("") !== 0  ) {
-            const divAlert = document.createElement("div"); 
-            divAlert.textContent = "Book Name cannot be blank";
-            alertContainer.appendChild(divAlert); 
+            //const divAlert = document.createElement("div"); 
+            alertContainer.textContent = "Book Name cannot be blank";
+            //alertContainer.appendChild(divAlert); 
             return; 
         }
+        alertContainer.textContent = "";
+       // alertContainer.removeChild(alertContainer.firstChild); 
         // Create new Book object and add to Library
         const book = new Book(bookName, authorName, read); 
         addBookToLibrary(book);
