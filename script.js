@@ -1,4 +1,4 @@
-let myLibrary = []; 
+//let myLibrary = []; 
 const addBookButton = document.querySelector(".newBook-Button");
 const formContainer = document.querySelector(".form-container"); 
 const tableContainer = document.querySelector(".table-container");
@@ -6,14 +6,76 @@ const alertContainer = document.querySelector(".alert-container");
 
 var counter = 0; 
 
-function Book(title, author, read) {
+
+class Book {
+
+    constructor(title, author, read) {
+        this.title = title; 
+        this.author = author; 
+        this.read = read; 
+    }
+}
+
+class myLibrary {
+    
+    constructor(library = []) {
+        this.library = library; 
+    }
+
+    addBookToLibrary(bookObject) {
+       
+        this.library.push(bookObject); 
+       // myLibrary.push(bookObject);  
+    
+        localStorage.setItem("title" + counter, bookObject.title);
+        localStorage.setItem("author" + counter, bookObject.author);
+        localStorage.setItem("read" + counter, bookObject.read);
+    
+        counter++; 
+        console.log(this.library); 
+    }
+
+    removeBook(removeButton, trElement, i) { 
+        const index = removeButton.closest("tr").rowIndex; 
+    
+        if ( typeof i === "undefined" ) {
+            removeFromStorage(index-1); 
+        } else {
+            removeFromStorage(i); 
+        }
+    
+        trElement.remove(); 
+        removeButton.remove(); 
+        this.library.splice(index-1, 1); // Update array
+        console.log(this.library); 
+        
+    }
+
+    changeRead(readButton, tdRead) {
+        const index = readButton.closest("tr").rowIndex; 
+        const libraryIndex = this.library[index-1].read;
+    
+        if ( libraryIndex.localeCompare("No") === 0 ) {
+            this.library[index-1].read = "Yes";
+            tdRead.textContent = this.library[index-1].read; 
+            localStorage.setItem("read" + (index-1), this.library[index-1].read);
+        } else {
+            this.library[index-1].read = "No";
+            tdRead.textContent = this.library[index-1].read; 
+            localStorage.setItem("read" + (index-1), this.library[index-1].read);
+        }
+        
+    }
+}
+
+/*function Book(title, author, read) {
     this.title = title; 
     this.author = author;
     this.read = read; 
     // the constructor
-}
+} */
 
-function addBookToLibrary(bookObject) {
+/* function addBookToLibrary(bookObject) {
     myLibrary.push(bookObject);  
 
     localStorage.setItem("title" + counter, bookObject.title);
@@ -21,7 +83,7 @@ function addBookToLibrary(bookObject) {
     localStorage.setItem("read" + counter, bookObject.read);
 
     counter++; 
-}
+} */
 
 
 function populateLibrary() {
@@ -33,7 +95,7 @@ function populateLibrary() {
         } else {
             const retrieveBook = new Book(localStorage.getItem("title" + i),localStorage.getItem("author" + i), localStorage.getItem("read" + i));
             counter = i; 
-            addBookToLibrary(retrieveBook); 
+            library.addBookToLibrary(retrieveBook); 
             //counter++; 
     
             const trElement = document.createElement("tr"); 
@@ -68,11 +130,11 @@ function populateLibrary() {
     
     
             removeOption.addEventListener("click", function() {  // When remove button is clicked
-                removeBook(tdPlaceholder, trElement, i);
+                library.removeBook(tdPlaceholder, trElement, i);
             });
     
             changeReadStatus.addEventListener("click", function() { // When change read button is clicked
-                changeRead(changeReadStatus, tdRead); 
+                library.changeRead(changeReadStatus, tdRead); 
             });
 
         }
@@ -82,7 +144,7 @@ function populateLibrary() {
 
 }
 
-function removeBook(removeButton, trElement, i) { 
+/* function removeBook(removeButton, trElement, i) { 
     const index = removeButton.closest("tr").rowIndex; 
 
     if ( typeof i === "undefined" ) {
@@ -95,7 +157,7 @@ function removeBook(removeButton, trElement, i) {
     removeButton.remove(); 
     myLibrary.splice(index-1, 1); // Update array
     
-}
+} */
 
 function removeFromStorage(index) {
 
@@ -114,7 +176,7 @@ function removeFromStorage(index) {
     
 }
 
-function changeRead(readButton, tdRead) {
+/* function changeRead(readButton, tdRead) {
     const index = readButton.closest("tr").rowIndex; 
     const libraryIndex = myLibrary[index-1].read;
 
@@ -128,7 +190,7 @@ function changeRead(readButton, tdRead) {
         localStorage.setItem("read" + (index-1), myLibrary[index-1].read);
     }
     
-}
+} */
 
 function createForm() {
   
@@ -232,7 +294,7 @@ function createForm() {
        // alertContainer.removeChild(alertContainer.firstChild); 
         // Create new Book object and add to Library
         const book = new Book(bookName, authorName, read); 
-        addBookToLibrary(book);
+        library.addBookToLibrary(book);
         
         // Adding new book to the library in a table format for user to see
         const trElement = document.createElement("tr"); 
@@ -265,11 +327,11 @@ function createForm() {
         trElement.appendChild(tdReadPlaceholder);
         
         removeOption.addEventListener("click", function() {  // When remove button is clicked
-            removeBook(tdPlaceholder, trElement); 
+            library.removeBook(tdPlaceholder, trElement); 
         });
 
         changeReadStatus.addEventListener("click", function() { // When change read button is clicked
-            changeRead(changeReadStatus, tdRead); 
+            library.changeRead(changeReadStatus, tdRead); 
         });
         // Remove the form elements. No longer needed. 
         inputBookName.remove(); 
@@ -282,6 +344,6 @@ function createForm() {
     });
 
 }
-
+let library = new myLibrary([]); 
 populateLibrary(); 
 addBookButton.addEventListener("click", createForm);
