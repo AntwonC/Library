@@ -201,10 +201,12 @@ function createForm() {
     // Book Name input
     const inputBookName = document.createElement("input");
     inputBookName.classList.add("input-Book");
+    inputBookName.setAttribute("required", "");
     inputBookName.placeholder = "Book Name";
     // Author input
     const inputBookAuthor = document.createElement("input"); 
     inputBookAuthor.classList.add("input-Book");
+    inputBookAuthor.setAttribute("required", "");
     inputBookAuthor.placeholder = "Author";
     // Buttons for Read/Not Read
 
@@ -273,8 +275,26 @@ function createForm() {
         }
         const read = output; 
 
-        // Validation 
-        if ( bookName.localeCompare("") === 0 && authorName.localeCompare("") === 0 ) {
+        // Validation using the Constraint Validation API 
+        
+        if ( inputBookName.validity.valueMissing ) {
+            inputBookName.setCustomValidity("You cannot leave the book name blank!"); 
+            //alertContainer.textContent = inputBookName.validationMessage; 
+            inputBookName.reportValidity(); 
+            return;
+        } else if ( inputBookAuthor.validity.valueMissing ) {
+            inputBookAuthor.setCustomValidity("You cannot leave the author name blank!"); 
+            inputBookAuthor.reportValidity(); 
+            //alertContainer.textContent = inputBookAuthor.validationMessage; 
+            return;
+        }
+
+        inputBookName.setCustomValidity(""); 
+        inputBookAuthor.setCustomValidity(""); 
+
+        
+        // Custom Validation using pure JS
+       /* if ( bookName.localeCompare("") === 0 && authorName.localeCompare("") === 0 ) {
             //const divAlert = document.createElement("div"); 
             alertContainer.textContent = "Book Name and Author cannot be blank";
            // alertContainer.appendChild(divAlert); 
@@ -289,7 +309,7 @@ function createForm() {
             alertContainer.textContent = "Book Name cannot be blank";
             //alertContainer.appendChild(divAlert); 
             return; 
-        }
+        } */
         alertContainer.textContent = "";
        // alertContainer.removeChild(alertContainer.firstChild); 
         // Create new Book object and add to Library
